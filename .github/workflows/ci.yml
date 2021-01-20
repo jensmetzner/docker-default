@@ -28,5 +28,3 @@ jobs:
         with:
           tags: ghcr.io/${{ github.repository }}:latest
           push: true
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest
-          cache-to: type=inline
