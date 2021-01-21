@@ -2,13 +2,19 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "v*"
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
+      - name: Get version from tag
+        id: tag_name
+        run: |
+            echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+        shell: bash
+
       - name: Checkout
         uses: actions/checkout@v2
       
@@ -27,6 +33,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.tag_name.outputs.current_version }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest
           cache-to: type=inline
